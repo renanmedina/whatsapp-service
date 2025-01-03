@@ -1,1 +1,3 @@
-export const ApplicationLogger = require('pino')()
+const ApplicationLogger = require('pino')();
+
+module.exports = ApplicationLogger
