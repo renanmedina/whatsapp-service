@@ -5,7 +5,7 @@ const opentelemetry = require('@opentelemetry/sdk-node');
 const { getNodeAutoInstrumentations } = require('@opentelemetry/auto-instrumentations-node');
 const { OTLPTraceExporter } = require('@opentelemetry/exporter-trace-otlp-http');
 const { Resource } = require('@opentelemetry/resources');
-const { ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION, ATTR_SERVICE_NAMESPACE } = require('@opentelemetry/semantic-conventions');
+const { ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION  } = require('@opentelemetry/semantic-conventions');
 const { OTEL_EXPORTER_OTLP_ENDPOINT, SERVICE_NAME, SERVICE_VERSION, ENV_NAME } = require('./config');
 const ApplicationLogger = require('./logger');
 
@@ -25,9 +25,9 @@ const TelemetrySdk = new opentelemetry.NodeSDK({
   // }),
   instrumentations: [getNodeAutoInstrumentations()],
   resource: new Resource({
-    [ATTR_SERVICE_NAME]: SERVICE_NAME,
-    [ATTR_SERVICE_NAMESPACE]: ENV_NAME,
-    [ATTR_SERVICE_VERSION]: SERVICE_VERSION
+    "deployment.environment.name": ENV_NAME,
+    "service.name": SERVICE_NAME,
+    "service.version": SERVICE_VERSION
   }),
 });
   
