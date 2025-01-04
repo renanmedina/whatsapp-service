@@ -13,7 +13,9 @@ const exporterOptions = {
   url: `${OTEL_EXPORTER_OTLP_ENDPOINT}/v1/traces`
 }
 
-console.log(exporterOptions);
+ApplicationLogger
+  .child(exporterOptions)
+  .info(`Starting OpenTelemetrySdk exporter to ${exporterOptions.url}`);
 
 const openTelemetryTraceExporter = new OTLPTraceExporter(exporterOptions);
 const TelemetrySdk = new opentelemetry.NodeSDK({
