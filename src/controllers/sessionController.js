@@ -1,6 +1,7 @@
 const qr = require('qr-image')
 const { setupSession, deleteSession, reloadSession, validateSession, flushSessions, sessions } = require('../sessions')
 const { sendErrorResponse, waitForNestedObject } = require('../utils')
+const ApplicationLogger = require('../logger');
 
 /**
  * Starts a session for the given session ID.
@@ -55,7 +56,7 @@ const startSession = async (req, res) => {
       }
     }
     */
-    console.log('startSession ERROR', error)
+    ApplicationLogger.info('startSession ERROR', error)
     sendErrorResponse(res, 500, error.message)
   }
 }
@@ -88,7 +89,7 @@ const statusSession = async (req, res) => {
     */
     res.json(sessionData)
   } catch (error) {
-    console.log('statusSession ERROR', error)
+    ApplicationLogger.info('statusSession ERROR', error)
     /* #swagger.responses[500] = {
       description: "Server Failure.",
       content: {
@@ -127,7 +128,7 @@ const sessionQrCode = async (req, res) => {
     }
     return res.json({ success: false, message: 'qr code not ready or already scanned' })
   } catch (error) {
-    console.log('sessionQrCode ERROR', error)
+    ApplicationLogger.info('sessionQrCode ERROR', error)
     /* #swagger.responses[500] = {
       description: "Server Failure.",
       content: {
@@ -177,7 +178,7 @@ const sessionQrCodeImage = async (req, res) => {
     }
     return res.json({ success: false, message: 'qr code not ready or already scanned' })
   } catch (error) {
-    console.log('sessionQrCodeImage ERROR', error)
+    ApplicationLogger.info('sessionQrCodeImage ERROR', error)
     /* #swagger.responses[500] = {
       description: "Server Failure.",
       content: {
@@ -232,7 +233,7 @@ const restartSession = async (req, res) => {
       }
     }
     */
-    console.log('restartSession ERROR', error)
+    ApplicationLogger.info('restartSession ERROR', error)
     sendErrorResponse(res, 500, error.message)
   }
 }
@@ -278,7 +279,7 @@ const terminateSession = async (req, res) => {
       }
     }
     */
-    console.log('terminateSession ERROR', error)
+    ApplicationLogger.info('terminateSession ERROR', error)
     sendErrorResponse(res, 500, error.message)
   }
 }
@@ -318,7 +319,7 @@ const terminateInactiveSessions = async (req, res) => {
       }
     }
     */
-    console.log('terminateInactiveSessions ERROR', error)
+    ApplicationLogger.info('terminateInactiveSessions ERROR', error)
     sendErrorResponse(res, 500, error.message)
   }
 }
@@ -358,7 +359,7 @@ const terminateAllSessions = async (req, res) => {
       }
     }
     */
-    console.log('terminateAllSessions ERROR', error)
+    ApplicationLogger.info('terminateAllSessions ERROR', error)
     sendErrorResponse(res, 500, error.message)
   }
 }

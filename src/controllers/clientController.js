@@ -1,6 +1,8 @@
 const { MessageMedia, Location, Buttons, List, Poll } = require('whatsapp-web.js')
 const { sessions } = require('../sessions')
 const { sendErrorResponse } = require('../utils')
+const ApplicationLogger = require('../logger');
+
 
 /**
  * Send a message to a chat using the WhatsApp API
@@ -123,7 +125,7 @@ const sendMessage = async (req, res) => {
 
     res.json({ success: true, message: messageOut })
   } catch (error) {
-    console.log(error)
+    ApplicationLogger.error(error)
     sendErrorResponse(res, 500, error.message)
   }
 }

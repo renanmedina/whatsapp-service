@@ -4,6 +4,7 @@ const path = require('path')
 const sessions = new Map()
 const { baseWebhookURL, sessionFolderPath, maxAttachmentSize, setMessagesAsSeen, webVersion, webVersionCacheType, recoverSessions } = require('./config')
 const { triggerWebhook, waitForNestedObject, checkIfEventisEnabled } = require('./utils')
+const ApplicationLogger = require('./logger');
 
 // Function to validate if the session is ready
 const validateSession = async (sessionId) => {
@@ -53,7 +54,7 @@ const validateSession = async (sessionId) => {
     returnData.message = 'session_connected'
     return returnData
   } catch (error) {
-    console.log(error)
+    ApplicationLogger.error(error)
     return { success: false, state: null, message: error.message }
   }
 }
@@ -72,13 +73,13 @@ const restoreSessions = () => {
         const match = file.match(/^session-(.+)$/)
         if (match) {
           const sessionId = match[1]
-          console.log('existing session detected', sessionId)
+          ApplicationLogger.info('existing session detected', sessionId)
           setupSession(sessionId)
         }
       }
     })
   } catch (error) {
-    console.log(error)
+    ApplicationLogger.error(error)
     console.error('Failed to restore sessions:', error)
   }
 }
@@ -128,7 +129,7 @@ const setupSession = (sessionId) => {
 
     const client = new Client(clientOptions)
 
-    client.initialize().catch(err => console.log('Initialize error:', err.message))
+    client.initialize().catch(err => ApplicationLogger.info('Initialize error:', err.message))
 
     initializeEvents(client, sessionId)
 
@@ -153,12 +154,12 @@ const initializeEvents = (client, sessionId) => {
       }
       client.pupPage.once('close', function () {
         // emitted when the page closes
-        console.log(`Browser page closed for ${sessionId}. Restoring`)
+        ApplicationLogger.info(`Browser page closed for ${sessionId}. Restoring`)
         restartSession(sessionId)
       })
       client.pupPage.once('error', function () {
         // emitted when the page crashes
-        console.log(`Error occurred on browser page for ${sessionId}. Restoring`)
+        ApplicationLogger.info(`Error occurred on browser page for ${sessionId}. Restoring`)
         restartSession(sessionId)
       })
     }).catch(e => { })
@@ -244,7 +245,7 @@ const initializeEvents = (client, sessionId) => {
             message.downloadMedia().then(messageMedia => {
               triggerWebhook(sessionWebhook, sessionId, 'media', { messageMedia, message })
             }).catch(e => {
-              console.log('Download media error:', e.message)
+              ApplicationLogger.info('Download media error:', e.message)
             })
           })
         }
@@ -375,7 +376,7 @@ const deleteSessionFolder = async (sessionId) => {
     }
     await fs.promises.rm(resolvedTargetDirPath, { recursive: true, force: true })
   } catch (error) {
-    console.log('Folder deletion error', error)
+    ApplicationLogger.error('Folder deletion error', error)
     throw error
   }
 }
@@ -405,7 +406,7 @@ const reloadSession = async (sessionId) => {
     sessions.delete(sessionId)
     setupSession(sessionId)
   } catch (error) {
-    console.log(error)
+    ApplicationLogger.error(error)
     throw error
   }
 }
@@ -420,11 +421,11 @@ const deleteSession = async (sessionId, validation) => {
     client.pupPage.removeAllListeners('error')
     if (validation.success) {
       // Client Connected, request logout
-      console.log(`Logging out session ${sessionId}`)
+      ApplicationLogger.info(`Logging out session ${sessionId}`)
       await client.logout()
     } else if (validation.message === 'session_not_connected') {
       // Client not Connected, request destroy
-      console.log(`Destroying session ${sessionId}`)
+      ApplicationLogger.info(`Destroying session ${sessionId}`)
       await client.destroy()
     }
     // Wait 10 secs for client.pupBrowser to be disconnected before deleting the folder
@@ -436,7 +437,7 @@ const deleteSession = async (sessionId, validation) => {
     await deleteSessionFolder(sessionId)
     sessions.delete(sessionId)
   } catch (error) {
-    console.log(error)
+    ApplicationLogger.error(error)
     throw error
   }
 }
@@ -459,7 +460,7 @@ const flushSessions = async (deleteOnlyInactive) => {
       }
     }
   } catch (error) {
-    console.log(error)
+    ApplicationLogger.error(error)
     throw error
   }
 }

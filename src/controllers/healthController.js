@@ -2,6 +2,7 @@ const fs = require('fs')
 const qrcode = require('qrcode-terminal')
 const { sessionFolderPath } = require('../config')
 const { sendErrorResponse } = require('../utils')
+const ApplicationLogger = require('../logger');
 
 /**
  * Responds to ping request with 'pong'
@@ -46,7 +47,7 @@ const localCallbackExample = async (req, res) => {
     fs.writeFile(`${sessionFolderPath}/message_log.txt`, `${JSON.stringify(req.body)}\r\n`, { flag: 'a+' }, _ => _)
     res.json({ success: true })
   } catch (error) {
-    console.log(error)
+    ApplicationLogger.error(error)
     fs.writeFile(`${sessionFolderPath}/message_log.txt`, `(ERROR) ${JSON.stringify(error)}\r\n`, { flag: 'a+' }, _ => _)
     sendErrorResponse(res, 500, error.message)
   }
