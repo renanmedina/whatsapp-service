@@ -73,7 +73,7 @@ const restoreSessions = () => {
         const match = file.match(/^session-(.+)$/)
         if (match) {
           const sessionId = match[1]
-          ApplicationLogger.info('existing session detected', sessionId)
+          ApplicationLogger.info(`existing session detected ${sessionId}`)
           setupSession(sessionId)
         }
       }
