@@ -6,8 +6,8 @@ const { getNodeAutoInstrumentations } = require('@opentelemetry/auto-instrumenta
 const { OTLPTraceExporter } = require('@opentelemetry/exporter-trace-otlp-http');
 const { Resource } = require('@opentelemetry/resources');
 const { ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION  } = require('@opentelemetry/semantic-conventions');
-const { OTEL_EXPORTER_OTLP_ENDPOINT, SERVICE_NAME, SERVICE_VERSION, ENV_NAME } = require('./config');
-const ApplicationLogger = require('./logger');
+const { OTEL_EXPORTER_OTLP_ENDPOINT, SERVICE_NAME, SERVICE_VERSION, ENV_NAME } = require('./src/config');
+const ApplicationLogger = require('./src/logger');
 
 const exporterOptions = {
   url: `${OTEL_EXPORTER_OTLP_ENDPOINT}/v1/traces`
