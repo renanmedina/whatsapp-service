@@ -5,6 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
+    "start_with_monitoring": "node -r ./src/monitoring.js server.js",
     "test": "jest --runInBand",
     "swagger": "node swagger.js"
   },

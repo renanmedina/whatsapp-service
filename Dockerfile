@@ -29,4 +29,4 @@ COPY . .
 EXPOSE 3000
 
 # Start the API
-CMD ["npm", "start"]
+CMD ["npm", "run", "start_with_monitoring"]
